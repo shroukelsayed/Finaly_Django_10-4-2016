@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Articles,Comments,Tags,Banwords,Emotions,System,UserProfile
+from .models import Articles,Comments,Tags,Banwords,System,UserProfile
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
@@ -20,7 +20,7 @@ class ApprovedListFilter(admin.SimpleListFilter):
 
     def queryset(self, request, queryset):
         
-        if self.value() == 'approved':
+        if self.value() == 'is_approved':
             return queryset.filter(article_isApproved=True)
         if self.value() == 'not_approved':
             return queryset.filter(article_isApproved=False)
@@ -49,8 +49,8 @@ class PublishedListFilter(admin.SimpleListFilter):
 class ArticlesAdmin(admin.ModelAdmin):
 
     list_filter = (ApprovedListFilter,PublishedListFilter)
-    list_display =['article_title','article_creationDate']
-    actions = ['make_published']
+    list_display =['article_title','article_creationDate','article_num_views','article_isPublished','article_isApproved','user_id']
+    actions = ['make_published','make_approved']
 
     def make_published(self, request, queryset):
         rows_updated = queryset.update(article_isPublished=True)
@@ -60,6 +60,15 @@ class ArticlesAdmin(admin.ModelAdmin):
             message_bit = "%s stories were" % rows_updated
         self.message_user(request, "%s successfully marked as published." % message_bit)
     make_published.short_description = "Mark selected stories as published"
+
+    def make_approved(self, request, queryset):
+        rows_updated = queryset.update(article_isApproved=True)
+        if rows_updated == 1:
+            message_bit = "1 story was"
+        else:
+            message_bit = "%s stories were" % rows_updated
+        self.message_user(request, "%s successfully marked as approved." % message_bit)
+    make_approved.short_description = "Mark selected stories as approved"
 
 admin.site.register(Articles,ArticlesAdmin)
 
@@ -87,11 +96,21 @@ class ApprovedListFilter(admin.SimpleListFilter):
 
 class CommentsAdmin(admin.ModelAdmin):
     list_filter = (ApprovedListFilter,)
+    list_display = ['comment_content','comment_creationDate','comment_isApproved','user_id']
+    actions = ['make_approved']
 
-admin.site.register(Comments,CommentsAdmin)	
+    def make_approved(self, request, queryset):
+        rows_updated = queryset.update(comment_isApproved=True)
+        if rows_updated == 1:
+            message_bit = "1 story was"
+        else:
+            message_bit = "%s stories were" % rows_updated
+        self.message_user(request, "%s successfully marked as approved." % message_bit)
+    make_approved.short_description = "Mark selected stories as approved"
+
+admin.site.register(Comments,CommentsAdmin) 
 admin.site.register(Tags)
 admin.site.register(Banwords)
-admin.site.register(Emotions)
 admin.site.register(System)
 
 class UserProfileInline(admin.StackedInline):

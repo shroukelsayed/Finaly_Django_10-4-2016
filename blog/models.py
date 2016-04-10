@@ -38,12 +38,6 @@ class Tags (models.Model):
 class Banwords (models.Model):
     word=models.CharField(max_length=100)
 
-
-class Emotions (models.Model):
-    keyword=models.CharField(max_length=100)
-    path=models.CharField(max_length=100)
-    
-
 class System (models.Model):
     system_isLocked=models.BooleanField(default=False)
 

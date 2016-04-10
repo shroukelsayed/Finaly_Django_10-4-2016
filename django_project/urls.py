@@ -41,7 +41,7 @@ urlpatterns = [
     url(r'^addComment/(?P<articale_id>[0-9]+)/(?P<user_id>[0-9]+)$', addComment),
     url(r'^addReply/(?P<articale_id>[0-9]+)/(?P<comment_id>[0-9]+)/(?P<user_id>[0-9]+)$', addReply),
 
-    url(r'^images/(?P<path>.*)$', 'django.views.static.serve' , {'document_root': settings.MEDIA_ROOT}),
+    # url(r'^images/(?P<path>.*)$', 'django.views.static.serve' , {'document_root': settings.MEDIA_ROOT}),
     
     url(r'^likes/(?P<articale_id>[0-9]+)/(?P<user_id>[0-9]+)$', likes2),
     url(r'^like/(?P<comment_id>[0-9]+)/(?P<user_id>[0-9]+)$', like),
