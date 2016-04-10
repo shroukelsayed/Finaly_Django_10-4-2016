@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Blog Post - Start Bootstrap Template</title>
+
+    {% load staticfiles %}
+    <!-- Bootstrap Core CSS -->
+    <link href="{%static "css/bootstrap.min.css" %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{%static "css/blog-post.css" %}"rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <!-- <script src="{%static "subTmpl/navbar.js"%}"></script> --> <!-- include navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" dat-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/home">Bloggy</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        {% if "user_id" in request.session %}
+                        <a href="/addArticaleForm/">New Articale</a>
+                        {% endif %}
+                    </li>
+                    <li>
+                        {% if "user_id" in request.session %}
+                        <a href="/myArticales/{{request.session.user_id}}/">MyArticales</a>
+                        {% endif %}
+                    </li>
+                    <li>
+                        {% if "user_id" in request.session %}
+                        <a href="/readLaterPage/{{request.session.user_id}}">Read Later</a>
+                        {% endif %}
+                    </li>
+                    <li>
+                        {% if "user_id" in request.session %}
+                            <a href="/logout/"> logout</a>
+                                    
+                        {% else %}
+                            <a href="/signin/"> login</a>
+                        {% endif %}                
+                    </li>
+                </ul>
+            </div>
+        <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <div class="row">
+             <!-- Blog Sidebar Widgets Column -->
+            <div class="col-md-4">
+
+                <!-- Blog Search Well -->
+                <div class="well">
+                    <h4>Blog Search</h4>
+                    <div class="input-group">
+                        <input type="text" class="form-control">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">
+                                <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                        </span>
+                    </div>
+                    <!-- /.input-group -->
+                </div>
+
+                <!-- Blog Categories Well -->
+                <div class="well">
+                    <h4>Related Articles</h4>
+                    <div class="row">
+                        {%for art in related_articles%}
+                        <div class="col-lg-12" style="margin-bottom: 10px;">
+                            <div class="col-lg-4">
+                                <img style="height:50px;width: 100%"class="img-responsive" src="{{ MEDIA_URL }}{{art.article_image}}" />
+                            </div>
+                            <div class="col-lg-8">
+                                <a href="/selectAnArticale/{{art.id}}">{{art.article_title}}</a>
+                            </div>
+                        </div>
+                        {%endfor%}
+                    </div>
+                    <!-- /.row -->
+                </div>
+
+                <!-- Side Widget Well -->
+                <div class="well">
+                    <h4>Side Widget Well</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+                </div>
+            </div>
+
+            <!-- Blog Post Content Column -->
+            <div class="col-lg-8">
+
+                <!-- Blog Post -->
+
+                <!-- Title -->
+                <div class="col-lg-12">
+                    <div class="col-lg-10">
+                        <h1>{{articale.article_title}}</h1> 
+                    </div>
+                    {%if 'user_id' in request.session%}
+                        <div class="col-lg-2">
+                            <a href="/readLater/{{articale.id}}/{{request.session.user_id}}">
+                                {%if isMarked%}
+                                    <input style="margin-top: 30px" type="button" class="btn btn-warning" value="unmark" />
+                                {%else%}
+                                    <input style="margin-top: 30px" type="button" class="btn btn-success" value="read later" />
+                                {%endif%}     
+                            </a>
+                        </div>
+                    {%endif%}
+                </div>
+
+                <!-- Author -->
+                <p class="lead">
+                    by <a href="#">{{writer.username}}</a>
+                </p>
+
+                <hr/>
+
+                <!-- Date/Time -->
+                <p><span class="glyphicon glyphicon-time"></span> {{articale.article_creationDate}} ... {{numViews}} views</p> 
+
+                <hr/>
+
+                <!-- Preview Image -->
+                <img class="img-responsive" src="{{ MEDIA_URL }}{{articale.article_image.name}}" style="width: 900px;height: 300px"/>
+
+                <hr/>
+                <ul class="tags">
+                    {%for tag in tags%}
+                        <li class="tag">
+                            {{tag.tag_name}}
+                        </li>
+                    {%endfor%}
+                </ul>
+
+                <!-- Post Content -->
+                <p class="lead">{{articale.article_content}}</p>
+
+                <hr/>
+
+                <!-- Blog Comments -->
+
+                <!-- Comments Form -->
+                {% if "user_id" in request.session %}
+                    <div class="well">
+                        <h4>Leave a Comment:</h4>
+                        <form role="form" method="post" action="/addComment/{{articale.id}}/{{request.session.user_id}}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <textarea class="form-control" rows="3" name="comment"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">COMMENT</button>
+                        </form>
+                    </div>
+                    <hr/>
+                {%endif%}
+
+                <!-- Posted Comments -->
+                
+                {% for c in comments%}
+                    {%if c.comment_isApproved == 1 and c.parent_id_id == NULL %}
+                        <div class="media">
+                            <a class="pull-left" href="#">
+                                <img class="media-object" style="width: 64px;height: 64px"src="{%static "user.jpg"%}" alt=""/>
+                            </a>
+                            <div class="media-body">
+                                <h4 class="media-heading"><!-- Start Bootstrap -->
+                                    <small>{{c.comment_creationDate}}</small>
+                                </h4>
+                                {% load emoticons_tags %}
+                                {% emoticons %}
+                                {{c.comment_content}}
+                                {%endemoticons%}
+                                <br/>
+                                <!-- {{likes}} Likes ... -->
+
+                                {%for x in likes%}
+                                    {%if x.id == c.id%}
+                                        {{x.num_likes}} Likes
+                                    {%endif%}
+                                {%endfor%}
+                                {% if "user_id" in request.session %}
+                                    {% if c.id in isLike %}
+                                        <a href="/unlike/{{c.id}}/{{request.session.user_id}}">UnLike</a>
+                                    {%else%}
+                                        <a href="/like/{{c.id}}/{{request.session.user_id}}">Like</a>
+                                    {%endif%}
+                                {%endif%}
+
+                                {%for reply in comments%}
+                                    {%if reply.parent_id_id == c.id and reply.comment_isApproved == 1 %}
+                                        <div class="media">
+                                            <a class="pull-left" href="#">
+                                                <img class="media-object" style="width: 64px;height: 64px"src="{%static "user.jpg"%}" alt=""/>
+                                            </a>
+                                            <div class="media-body">
+                                                <h4 class="media-heading"><!-- Nested Start Bootstrap -->
+                                                    <small>{{reply.comment_creationDate}}</small>
+                                                </h4>
+                                                {% load emoticons_tags %}
+                                                {% emoticons %}
+                                                {{reply.comment_content}}
+                                                {%endemoticons%}
+                                                <br/>
+                                                <!-- {{likes}} Likes ... -->
+                                  
+                                                {%for x in likes %}
+                                                    {%if x.id == reply.id%}
+                                                        {{x.num_likes}} Likes
+                                                    {%endif%}
+                                                {%endfor%}
+                                                {% if "user_id" in request.session %}
+                                                    {% if reply.id in isLike %}
+                                                        <a href="/unlike/{{reply.id}}/{{request.session.user_id}}">UnLike</a>
+                                                    {%else%}
+                                                        <a href="/like/{{reply.id}}/{{request.session.user_id}}">Like</a>
+                                                    {%endif%}
+                                                {%endif%}
+
+                                            </div>
+                                        </div>
+                                    {%endif%}
+                                {%endfor%}
+                                {% if "user_id" in request.session %}
+                                    <form role="form" method="post" action="/addReply/{{articale.id}}/{{c.id}}/{{request.session.user_id}}">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <textarea class="form-control" rows="1" name="reply"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">REPLY</button>
+                                    </form>
+                                {%endif%}
+                            </div>
+                        <div>           
+                    {%endif%}   
+                {% endfor %}
+            </div>
+        </div>
+        <!-- /.row -->
+        <hr>
+        <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyright &copy; Your Website 2014</p>
+                </div>
+            </div>
+            <!-- /.row -->
+        </footer>
+    </div>
+    <!-- /.container -->
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
